@@ -49,7 +49,7 @@ jobs:
         env:
           DOCKER_REGISTRY: ghcr.io/${{ github.repository }}
         run: |
-          DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+          DOCKER_REGISTRY=${DOCKER_REGISTRY}
           VERSION=latest
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#ref/tags/}
