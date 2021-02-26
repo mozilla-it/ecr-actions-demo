@@ -23,13 +23,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Login to github ghcr
-        id: login-ghcr
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+      #- name: Login to github ghcr
+      #  id: login-ghcr
+      #  uses: docker/login-action@v1
+      #  with:
+        #    registry: ghcr.io
+        #  username: ${{ github.repository_owner }}
+        #  password: ${{ secrets.CR_PAT }}
 
       - name: ecr-tags
         id: ecr-tags
@@ -64,7 +64,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.ecr-tags.outputs.tags}}
-            ${{ steps.ghcr-tags.outputs.tags }}
+            #${{ steps.ghcr-tags.outputs.tags }}
 
             #- name: Build, tag, and push image to Amazon ECR
             #env:
@@ -76,9 +76,4 @@ jobs:
                 #docker image tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
                 #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
                 #docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
-      - name: Logout of Amazon ECR
-        if: always()
-        run: |
-          docker logout ${{ steps.login-ecr.outputs.registry }}
 
