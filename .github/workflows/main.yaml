@@ -23,14 +23,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      #- name: Login to github ghcr
-      #  id: login-ghcr
-      #  uses: docker/login-action@v1
-      #  with:
-        #    registry: ghcr.io
-        #  username: ${{ github.repository_owner }}
-        #  password: ${{ secrets.CR_PAT }}
-
       - name: ecr-tags
         id: ecr-tags
         env:
@@ -44,19 +36,6 @@ jobs:
           ECR_TAGS=${DOCKER_REGISTRY}:${VERSION}
           echo ::set-output name=tags::${ECR_TAGS}
 
-      - name: ghcr-tags
-        id: ghcr-tags
-        env:
-          DOCKER_REGISTRY: ghcr.io/${{ github.repository }}
-        run: |
-          DOCKER_REGISTRY=${DOCKER_REGISTRY}
-          VERSION=latest
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#ref/tags/}
-          fi
-          GHCR_TAGS=${DOCKER_REGISTRY}:${VERSION}
-          echo ::set-output name=tags::${GHCR_TAGS}
-
       - name: Build, tag and push image to registry
         uses: docker/build-push-action@v2
         with:
@@ -64,16 +43,3 @@ jobs:
           push: true
           tags: |
             ${{ steps.ecr-tags.outputs.tags}}
-            #${{ steps.ghcr-tags.outputs.tags }}
-
-            #- name: Build, tag, and push image to Amazon ECR
-            #env:
-              #ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-              #ECR_REPOSITORY: cloudflared
-              #IMAGE_TAG: ${{ github.sha }}
-              #run: |
-                #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                #docker image tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-                #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                #docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-
