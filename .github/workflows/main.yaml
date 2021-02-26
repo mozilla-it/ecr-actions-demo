@@ -41,8 +41,8 @@ jobs:
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#ref/tags/}
           fi
-          TAGS=${DOCKER_REGISTRY}:${VERSION}
-          echo ::set-output name=tags::${TAGS}
+          ECR_TAGS=${DOCKER_REGISTRY}:${VERSION}
+          echo ::set-output name=tags::${ECR_TAGS}
 
       - name: ghcr-tags
         id: ghcr-tags
@@ -54,8 +54,8 @@ jobs:
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#ref/tags/}
           fi
-          TAGS=${DOCKER_REGISTRY}:${VERSION}
-          echo ::set-output name=tags::${TAGS}
+          GHCR_TAGS=${DOCKER_REGISTRY}:${VERSION}
+          echo ::set-output name=tags::${GHCR_TAGS}
 
       - name: Build, tag and push image to registry
         uses: docker/build-push-action@v2
